@@ -14,6 +14,7 @@ import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
@@ -42,7 +43,6 @@ public class BoardApi {
                         .given(requestSpecification())
                         .with()
                         .queryParam("name", name)
-                        .queryParams(boardApi.params)
                         .log().all()
                         .post(ROOT_URL + BOARD_PATH)
                         .prettyPeek();
@@ -83,6 +83,7 @@ public class BoardApi {
             return this;
         }
 
+        //
         public Response callApi() {
             return RestAssured.with()
                     .queryParams(boardApi.params)
@@ -94,6 +95,7 @@ public class BoardApi {
         }
     }
 
+    //return RequestBuilder
     public static RequestBuilder with() {
         BoardApi api = new BoardApi();
         return new RequestBuilder(api);
@@ -105,7 +107,7 @@ public class BoardApi {
                     .setAccept(JSON)
                     .addQueryParam("key",PROPERTY_KEY)
                     .addQueryParam("token", PROPERTY_TOKEN)
-                    .addQueryParam("reqId", new Random())
+      //              .addQueryParam("reqId", new Random())
                     .build();
     }
     public static ResponseSpecification responseSpecification() {
@@ -147,7 +149,8 @@ public class BoardApi {
                 .build();
     }
 
-    public static List<Board> getBoardAnswer(Response response){
-        return new Gson().fromJson(response.asString().trim(), new TypeToken<List<Board>>(){}.getType());
+    public static Board getBoardAnswer(Response response){
+    //    return new Gson().fromJson(response.asString().trim(), new TypeToken<Board>(){}.getType());
+        return new Gson().fromJson(response.asString().trim(), new TypeToken<Board>(){}.getType());
     }
 }

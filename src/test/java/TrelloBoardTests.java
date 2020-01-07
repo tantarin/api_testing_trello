@@ -6,20 +6,17 @@ import org.apache.http.HttpStatus;
 import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class TrelloBoardTests {
     @Test
     public void boardCanBeCreatedWithCurrentName(){
-        //**
-        List<Board> answers = BoardApi.getBoardAnswer(
-                BoardApi.with().id("").callApi());
-        assertThat(answers.get(0), equalTo("motherr"));
-        assertThat(answers.get(1), equalTo("fatherr"));
-        assertThat(answers.get(0), equalTo("mother"));
-        assertThat(answers.get(1), equalTo("father"));
-        assertThat(answers.get(2), equalTo(""));
+        Board answers = BoardApi.getBoardAnswer(
+                BoardApi.with().getBoard("5e1463928e727580f94eeb75"));
+        assertThat(answers, equalTo("motherr"));
     }
 }
 
