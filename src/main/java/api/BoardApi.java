@@ -12,9 +12,6 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.RequestBuilder;
-import org.testng.annotations.Test;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
