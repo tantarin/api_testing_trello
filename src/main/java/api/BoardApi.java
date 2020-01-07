@@ -27,7 +27,7 @@ public class BoardApi {
 
 
     private BoardApi() {}
-    private HashMap<String, String> params = new HashMap<String, String>();
+    private HashMap<String, String> params = new HashMap<>();
     private Method method = Method.GET;
 
     public static class RequestBuilder {
