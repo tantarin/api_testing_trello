@@ -13,11 +13,7 @@ import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import utils.ApiProperties;
-
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static org.hamcrest.Matchers.lessThan;
@@ -25,11 +21,13 @@ import static org.hamcrest.Matchers.lessThan;
 public class BoardApi {
     public static final String ROOT_URL = ApiProperties.getInstance().getProperty("path");
     public static final String PROPERTY_TOKEN = ApiProperties.getInstance().getProperty("token");
-    public static final String PROPERTY_KEY = ApiProperties.getInstance().getProperty("path");
-    public static final String BOARD_PATH = ROOT_URL+"/boards/";
+    public static final String PROPERTY_KEY = ApiProperties.getInstance().getProperty("key");
+    public static final String BOARD_PATH = ROOT_URL + "/boards/";
 
 
-    private BoardApi() {}
+    private BoardApi() {
+    }
+
     private HashMap<String, String> params = new HashMap<>();
     private Method method = Method.GET;
 
@@ -40,35 +38,51 @@ public class BoardApi {
             this.boardApi = boardApi;
         }
 
-        public Response createBoard(String name){
-                return RestAssured
-                        .given()
-                            .spec(requestSpecification())
-                        .with()
-                            .queryParam("name", name)
-                            .log().all()
-                        .when()
-                            .post(BOARD_PATH)
-                        .prettyPeek();
-        }
-
-        public Response getBoard(String id){
+        ////Create a new board
+        public Response createBoard(String name) {
             return RestAssured
-                    .given(requestSpecification())
+                    .given()
+                    .spec(requestSpecification())
                     .with()
-                    .queryParams(boardApi.params)
+                    .queryParam("name", name)
                     .log().all()
-                    .get(ROOT_URL + BOARD_PATH+id)
+                    .when()
+                    .post(BOARD_PATH)
                     .prettyPeek();
         }
 
-        public Response deleteBoard(String id){
+        //Request a single board.
+        public Response getBoard(String id) {
+            return RestAssured
+                    .given()
+                    .spec(requestSpecification())
+                    .with()
+                    .queryParam("fields", "name")
+                    .log().all()
+                    .when()
+                    .get(BOARD_PATH + id)
+                    .prettyPeek();
+        }
+
+        //Delete a board.
+        public Response deleteBoard(String id) {
+            return RestAssured
+                    .given()
+                    .spec(requestSpecification())
+                    .with()
+                    .log().all()
+                    .when()
+                    .delete(BOARD_PATH + id)
+                    .prettyPeek();
+        }
+
+        //Update an existing board by id
+        public Response updateBoard(String id) {
             return RestAssured
                     .given(requestSpecification())
                     .with()
-                    .queryParams(boardApi.params)
                     .log().all()
-                    .delete(ROOT_URL + BOARD_PATH+id)
+                    .put(BOARD_PATH + id)
                     .prettyPeek();
         }
 
@@ -82,23 +96,9 @@ public class BoardApi {
             return this;
         }
 
-        public RequestBuilder method(Method method){
+        public RequestBuilder method(Method method) {
             boardApi.method = method;
             return this;
-        }
-
-        //
-        public Response callApi() {
-            return RestAssured.with()
-               //     .queryParam(boardApi.params)
-               //     .queryParam("name", "fromJava")
-//                    .queryParam("id", "5e151328f279fd7ed6616441")
-                     .spec(requestSpecification())
-//                    .log().all()
-//                    .basePath(BOARD_PATH)
-//                    .request(Method.GET)
-                    .post("https://api.trello.com/1/boards/?name=9fd7ed6616441&key=cb9d5210ac7241d40bd7d4bb52fa2fc7&token=659afeb183ec0cc6c57a0f9bd70af5526d351e28a9c026e6a6cd1a213cc9438d")
-                    .prettyPeek();
         }
     }
 
@@ -109,13 +109,14 @@ public class BoardApi {
     }
 
     public static RequestSpecification requestSpecification() {
-            return new RequestSpecBuilder()
-                    .setContentType(JSON)
-                    .setAccept(JSON)
-                    .addQueryParam("key",PROPERTY_KEY)
-                    .addQueryParam("token", PROPERTY_TOKEN)
-                    .build();
+        return new RequestSpecBuilder()
+                .setContentType(JSON)
+                .setAccept(JSON)
+                .addQueryParam("key", PROPERTY_KEY)
+                .addQueryParam("token", PROPERTY_TOKEN)
+                .build();
     }
+
     public static ResponseSpecification responseSpecification() {
         return new ResponseSpecBuilder()
                 .expectContentType(JSON)
@@ -124,7 +125,8 @@ public class BoardApi {
                 .expectStatusCode(HttpStatus.SC_OK)
                 .build();
     }
-    public static ResponseSpecification successResponse(){
+
+    public static ResponseSpecification successResponse() {
         return new ResponseSpecBuilder()
                 .expectContentType(JSON)
                 .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
@@ -132,7 +134,7 @@ public class BoardApi {
                 .build();
     }
 
-    public static ResponseSpecification boardNotFound(){
+    public static ResponseSpecification boardNotFound() {
         return new ResponseSpecBuilder()
                 .expectContentType(TEXT)
                 .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
@@ -140,7 +142,7 @@ public class BoardApi {
                 .build();
     }
 
-    public static ResponseSpecification badRequest(){
+    public static ResponseSpecification badRequest() {
         return new ResponseSpecBuilder()
                 .expectContentType(TEXT)
                 .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
@@ -148,7 +150,7 @@ public class BoardApi {
                 .build();
     }
 
-    public static ResponseSpecification serverErrorRequest(){
+    public static ResponseSpecification serverErrorRequest() {
         return new ResponseSpecBuilder()
                 .expectContentType(TEXT)
                 .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
@@ -156,8 +158,9 @@ public class BoardApi {
                 .build();
     }
 
-    public static Board getBoardAnswer(Response response){
-    //    return new Gson().fromJson(response.asString().trim(), new TypeToken<Board>(){}.getType());
-        return new Gson().fromJson(response.asString().trim(), new TypeToken<Board>(){}.getType());
+    public static Board getBoardAnswer(Response response) {
+            return new Gson().fromJson(response.asString().trim(), new TypeToken<Board>() {
+            }.getType());
     }
 }
+
