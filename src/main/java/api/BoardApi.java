@@ -12,6 +12,8 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import utils.ApiProperties;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +23,9 @@ import static io.restassured.http.ContentType.TEXT;
 import static org.hamcrest.Matchers.lessThan;
 
 public class BoardApi {
-    public static final String ROOT_URL = "https://api.trello.com/1";
-    public static final String PROPERTY_TOKEN = "659afeb183ec0cc6c57a0f9bd70af5526d351e28a9c026e6a6cd1a213cc9438d";
-    public static final String PROPERTY_KEY = "cb9d5210ac7241d40bd7d4bb52fa2fc7";
+    public static final String ROOT_URL = ApiProperties.getInstance().getProperty("path");
+    public static final String PROPERTY_TOKEN = ApiProperties.getInstance().getProperty("token");
+    public static final String PROPERTY_KEY = ApiProperties.getInstance().getProperty("path");
     public static final String BOARD_PATH = ROOT_URL+"/boards/";
 
 
@@ -112,7 +114,6 @@ public class BoardApi {
                     .setAccept(JSON)
                     .addQueryParam("key",PROPERTY_KEY)
                     .addQueryParam("token", PROPERTY_TOKEN)
-      //              .addQueryParam("reqId", new Random())
                     .build();
     }
     public static ResponseSpecification responseSpecification() {

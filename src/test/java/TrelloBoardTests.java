@@ -17,8 +17,8 @@ public class TrelloBoardTests {
     @Test
     public void simpleTest() {
         Board answers = BoardApi.getBoardAnswer(BoardApi.with()
-                .createBoard("q123"));
-        assertThat(answers.getName(), equalTo("q123"));
+                .createBoard("q1234"));
+        assertThat(answers.getName(), equalTo("q1234"));
     }
 
     @Test
