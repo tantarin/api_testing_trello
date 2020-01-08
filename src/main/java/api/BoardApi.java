@@ -40,11 +40,13 @@ public class BoardApi {
 
         public Response createBoard(String name){
                 return RestAssured
-                        .given(requestSpecification())
+                        .given()
+                            .spec(requestSpecification())
                         .with()
-                        .queryParam("name", name)
-                        .log().all()
-                        .post(ROOT_URL + BOARD_PATH)
+                            .queryParam("name", name)
+                            .log().all()
+                        .when()
+                            .post(BOARD_PATH)
                         .prettyPeek();
         }
 
@@ -86,11 +88,14 @@ public class BoardApi {
         //
         public Response callApi() {
             return RestAssured.with()
-                    .queryParams(boardApi.params)
-                    .spec(requestSpecification())
-                    .log().all()
-                    .basePath(BOARD_PATH)
-                    .request(boardApi.method)
+               //     .queryParam(boardApi.params)
+               //     .queryParam("name", "fromJava")
+//                    .queryParam("id", "5e151328f279fd7ed6616441")
+                     .spec(requestSpecification())
+//                    .log().all()
+//                    .basePath(BOARD_PATH)
+//                    .request(Method.GET)
+                    .post("https://api.trello.com/1/boards/?name=9fd7ed6616441&key=cb9d5210ac7241d40bd7d4bb52fa2fc7&token=659afeb183ec0cc6c57a0f9bd70af5526d351e28a9c026e6a6cd1a213cc9438d")
                     .prettyPeek();
         }
     }
@@ -113,14 +118,15 @@ public class BoardApi {
     public static ResponseSpecification responseSpecification() {
         return new ResponseSpecBuilder()
                 .expectContentType(JSON)
-                .expectHeader(HttpHeaders.CONNECTION, "keepAlive")
+                .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
+                .expectResponseTime(lessThan(2000L))
                 .expectStatusCode(HttpStatus.SC_OK)
                 .build();
     }
     public static ResponseSpecification successResponse(){
         return new ResponseSpecBuilder()
-                .expectContentType(TEXT)
-                .expectHeader(HttpHeaders.CONNECTION, "keepAlive")
+                .expectContentType(JSON)
+                .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
                 .expectStatusCode(HttpStatus.SC_OK)
                 .build();
     }
@@ -128,7 +134,7 @@ public class BoardApi {
     public static ResponseSpecification boardNotFound(){
         return new ResponseSpecBuilder()
                 .expectContentType(TEXT)
-                .expectHeader(HttpHeaders.CONNECTION, "keepAlive")
+                .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
                 .expectStatusCode(HttpStatus.SC_NOT_FOUND)
                 .build();
     }
@@ -136,7 +142,7 @@ public class BoardApi {
     public static ResponseSpecification badRequest(){
         return new ResponseSpecBuilder()
                 .expectContentType(TEXT)
-                .expectHeader(HttpHeaders.CONNECTION, "keepAlive")
+                .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
                 .expectStatusCode(HttpStatus.SC_BAD_REQUEST)
                 .build();
     }
@@ -144,7 +150,7 @@ public class BoardApi {
     public static ResponseSpecification serverErrorRequest(){
         return new ResponseSpecBuilder()
                 .expectContentType(TEXT)
-                .expectHeader(HttpHeaders.CONNECTION, "keepAlive")
+                .expectHeader(HttpHeaders.CONNECTION, "keep-alive")
                 .expectStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR)
                 .build();
     }

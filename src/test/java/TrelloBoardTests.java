@@ -8,10 +8,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static api.BoardApi.successResponse;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class TrelloBoardTests {
+
+    @Test
+    public void simpleTest() {
+        Board answers = BoardApi.getBoardAnswer(BoardApi.with()
+                .createBoard("q123"));
+        assertThat(answers.getName(), equalTo("q123"));
+    }
+
+    @Test
+    public void boardsTest() {
+        Board answers =
+                BoardApi.getBoardAnswer(BoardApi.with().callApi());
+        assertThat(answers.getName(), equalTo("TestBoard"));
+    }
+
     @Test
     public void boardCanBeCreatedWithCurrentName(){
         Board answers = BoardApi.getBoardAnswer(
