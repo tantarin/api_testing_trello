@@ -13,7 +13,6 @@ public class TrelloBoardTests {
         Board answers = getBoardAnswer(BoardApi.with()
                 .createBoard(boardName));
         assertThat(answers.getName(), equalTo(boardName));
-        System.out.println(answers.getId());
     }
 
     @Test
