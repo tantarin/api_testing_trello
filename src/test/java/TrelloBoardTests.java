@@ -1,6 +1,9 @@
 import api.BoardApi;
 import beans.Board;
 import org.junit.Test;
+
+import java.util.ArrayList;
+
 import static api.BoardApi.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -44,6 +47,16 @@ public class TrelloBoardTests {
         Board answers =
                 getBoardAnswer(BoardApi.with().updateBoard(boardId));
         assertThat(answers.getName(), equalTo(boardName));
+    }
+
+    @Test
+    public void getTheMembershipsForBoardTest() {
+        String boardName = getRandomBoardName(5);
+        String boardId = getBoardAnswer(BoardApi.with()
+                .createBoard(boardName)).getId();
+        ArrayList<Board> answers =
+                getBoardAnswerArray(BoardApi.with().getMemberships(boardId));
+        BoardApi.responseSpecification().expect().spec(successResponse());
     }
 }
 

@@ -17,6 +17,7 @@ import utils.ApiProperties;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -89,6 +90,15 @@ public class BoardApi {
                     .with()
                     .log().all()
                     .put(BOARD_PATH + id)
+                    .prettyPeek();
+        }
+
+        public Response getMemberships(String id) {
+            return RestAssured
+                    .given(requestSpecification())
+                    .with()
+                    .log().all()
+                    .get(BOARD_PATH + id + "/memberships")
                     .prettyPeek();
         }
 
@@ -167,6 +177,10 @@ public class BoardApi {
     public static Board getBoardAnswer(Response response) {
             return new Gson().fromJson(response.asString().trim(), new TypeToken<Board>() {
             }.getType());
+    }
+    public static ArrayList<Board> getBoardAnswerArray(Response response) {
+        return new Gson().fromJson(response.asString().trim(), new TypeToken<ArrayList<Board>>() {
+        }.getType());
     }
 
     public static String getRandomBoardName(int length) {
