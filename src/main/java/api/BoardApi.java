@@ -13,7 +13,13 @@ import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import utils.ApiProperties;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Random;
+
 import static io.restassured.http.ContentType.JSON;
 import static io.restassured.http.ContentType.TEXT;
 import static org.hamcrest.Matchers.lessThan;
@@ -161,6 +167,23 @@ public class BoardApi {
     public static Board getBoardAnswer(Response response) {
             return new Gson().fromJson(response.asString().trim(), new TypeToken<Board>() {
             }.getType());
+    }
+
+    public static String getRandomBoardName(int length) {
+        String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
+        String NUMBER = "0123456789";
+        final String DATA_FOR_RANDOM_STRING = CHAR_LOWER + NUMBER;
+        SecureRandom random = new SecureRandom();
+
+        if (length < 1) throw new IllegalArgumentException();
+
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int rndCharAt = random.nextInt(DATA_FOR_RANDOM_STRING.length());
+            char rndChar = DATA_FOR_RANDOM_STRING.charAt(rndCharAt);
+            sb.append(rndChar);
+        }
+        return sb.toString();
     }
 }
 
