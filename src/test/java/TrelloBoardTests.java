@@ -1,10 +1,10 @@
 import api.BoardApi;
 import beans.Board;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
-
 import java.util.ArrayList;
-
 import static api.BoardApi.*;
+import static api.BoardApi.RequestBuilder.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -12,51 +12,38 @@ public class TrelloBoardTests {
 
     @Test
     public void createNewBoardTest() {
-        String boardName = getRandomBoardName(5);
-        Board answers = getBoardAnswer(BoardApi.with()
-                .createBoard(boardName));
-        assertThat(answers.getName(), equalTo(boardName));
+        String name = RandomStringUtils.random(5);
+        Board newBoard = createNewBoard(name);
+        getBoardResponse(newBoard.getId()).then().spec(successResponse());
+        assertThat( name, equalTo(newBoard.getName()));
+        deleteBoard(newBoard.getId());
     }
 
     @Test
     public void getBoardTest() {
-        String boardName = getRandomBoardName(5);
-        String boardId = getBoardAnswer(BoardApi.with()
-                .createBoard(boardName)).getId();
-        Board answers =
-                getBoardAnswer(BoardApi.with().getBoard(boardId));
-        assertThat(answers.getName(), equalTo(boardName));
+        String name = RandomStringUtils.random(5);
+        Board newBoard = createNewBoard(name);
+        Board board = getBoard(newBoard.getId());
+        assertThat( name, equalTo(board.getName()));
+        deleteBoard(newBoard.getId());
     }
 
     @Test
     public void deleteBoardTest() {
-        String boardName = getRandomBoardName(5);
-        String boardId = getBoardAnswer(BoardApi.with()
-                .createBoard(boardName)).getId();
-        Board answers =
-                getBoardAnswer(BoardApi.with().deleteBoard(boardId));
-        assertThat(answers.getName(), equalTo(null));
-        BoardApi.responseSpecification().expect().spec(successResponse());
+        String name = RandomStringUtils.random(5);
+        Board newBoard = createNewBoard(name);
+        deleteBoard(newBoard.getId());
+        getBoardResponse(newBoard.getId()).then().spec(boardNotFound());
     }
 
     @Test
     public void updateBoardTest() {
-        String boardName = getRandomBoardName(5);
-        String boardId = getBoardAnswer(BoardApi.with()
-                .createBoard(boardName)).getId();
-        Board answers =
-                getBoardAnswer(BoardApi.with().updateBoard(boardId));
-        assertThat(answers.getName(), equalTo(boardName));
-    }
-
-    @Test
-    public void getTheMembershipsForBoardTest() {
-        String boardName = getRandomBoardName(5);
-        String boardId = getBoardAnswer(BoardApi.with()
-                .createBoard(boardName)).getId();
-        ArrayList<Board> answers =
-                getBoardAnswerArray(BoardApi.with().getMemberships(boardId));
-        BoardApi.responseSpecification().expect().spec(successResponse());
+        String name = RandomStringUtils.random(5);
+        Board newBoard = createNewBoard(name);
+        String newName = RandomStringUtils.random(5);
+        Board board = updateBoard(newBoard.getId(), newName);
+        assertThat( newName, equalTo(board.getName()));
+        deleteBoard(newBoard.getId());
     }
 }
 
